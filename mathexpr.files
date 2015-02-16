@@ -1,0 +1,11 @@
+src/eval.c
+include/mathexpr.h
+test/expr-test.c
+src/lexer.l
+src/expr.h
+src/lexer.c
+src/Makefile.am
+src/lexer.h
+test/cmockery.h
+test/cmockery.c
+test/Makefile.am
