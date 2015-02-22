@@ -1,8 +1,8 @@
 #include <stdarg.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include <setjmp.h>
-#include <cmockery.h>
-
+#include <string.h>
 #include <math.h>
 
 #include <mathexpr.h>
@@ -15,7 +15,7 @@ static char errbuf[1024];
 void _assert_double_close(double expected, double actual, const char *const file, const int line)
 {
     if (fabs(expected - actual) > 1e-8) {
-        print_error("%f != %f (+- 1e-8)\n", expected, actual);
+        print_error("%f != %.8f (+- 1e-8)\n", expected, actual);
         _fail(file, line);
     }
 }
@@ -62,6 +62,7 @@ static void test_simple(void **state) {
     assert_expr_ok("2 ^ 3", 0, 8);
     assert_expr_ok("2 ^ t", 2, 4);
     assert_expr_ok("0^2", 0, 0);
+    assert_expr_ok("1/0", 0, INFINITY);
 }
 
 static void test_unary(void **state) {
@@ -74,12 +75,16 @@ static void test_assoc(void **state) {
     assert_expr_ok("1 + 2 + t", 3, 6);
     assert_expr_ok("1 + 2 * t", 3, 7);
     assert_expr_ok("1 + 2 ^ t", 3, 9);
+    assert_expr_ok("1 * 1 * t * 1 * 1", 2, 2);
 }
 
 static void test_parens(void **state) {
     assert_expr_ok("(1 + 2) * t", 3, 9);
     assert_expr_ok("(((1)))", 0, 1);
     assert_expr_ok("(1 + (2 - 3))", 0, 0);
+
+    assert_expr_fail("()");
+    assert_expr_fail("1 + (3 - 4");
 }
 
 static void test_funcs(void **state) {
@@ -87,6 +92,10 @@ static void test_funcs(void **state) {
     assert_expr_ok("cos(0)", 0, 1);
     assert_expr_ok("sin(PI)^2", 0, 0);
     assert_expr_ok("sin(PI)^2 + (5 * (t - 1))", 42, 205);
+
+    srandom(0);
+    assert_expr_ok("random()", 0, 0.84018772);
+    assert_expr_ok("1 + random() + 5", 0, 6.39438293);
 }
 
 

@@ -37,32 +37,7 @@ extern "C" {
 #include <stddef.h>
 
 #define MATH_EXPR_VAR_NAME "t"
-#define MATH_EXPR_MAX_NODES 64
-
-typedef enum {
-    MATH_EXPR_NT_NUMBER = 258,
-    MATH_EXPR_NT_VAR,
-
-    // functions
-    MATH_EXPR_NT_ABS,
-    MATH_EXPR_NT_ACOS,
-    MATH_EXPR_NT_ASIN,
-    MATH_EXPR_NT_ATAN,
-    MATH_EXPR_NT_ATAN2,
-    MATH_EXPR_NT_CEIL,
-    MATH_EXPR_NT_COS,
-    MATH_EXPR_NT_EXP,
-    MATH_EXPR_NT_FLOOR,
-    MATH_EXPR_NT_LOG,
-    MATH_EXPR_NT_MAX,
-    MATH_EXPR_NT_MIN,
-    MATH_EXPR_NT_POW,
-    MATH_EXPR_NT_RANDOM,
-    MATH_EXPR_NT_ROUND,
-    MATH_EXPR_NT_SIN,
-    MATH_EXPR_NT_SQRT,
-    MATH_EXPR_NT_TAN
-} MathExprNodeType;
+#define MATH_EXPR_MAX_NODES 128
 
 typedef struct {
     int type;

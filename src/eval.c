@@ -88,7 +88,7 @@ static int arity_check(const MathExprNode *nodes, size_t nodes_len, char *errbuf
 }
 
 static double eval_op0(int op) {
-    assert(arity(op) == 1);
+    assert(arity(op) == 0);
 
     switch (op) {
     case MATH_EXPR_NT_RANDOM: return (double)rand()/(double)RAND_MAX;
@@ -165,10 +165,15 @@ static int constant_fold(MathExprNode *nodes, size_t nodes_len, MathExprNode *no
 
         switch (arity(nodes[i].type)) {
         case 0:
+            for (size_t j = 0; j < stack_len; j++) {
+                nodes_out[*nodes_out_len] = stack[j]; (*nodes_out_len)++;
+            }
+            nodes_out[*nodes_out_len] = nodes[i]; (*nodes_out_len)++;
+            stack_len = 0;
             break;
 
         case 1:
-            if (stack[stack_len - 1].type == MATH_EXPR_NT_NUMBER) {
+            if (stack_len > 0 && stack[stack_len - 1].type == MATH_EXPR_NT_NUMBER) {
                 stack[stack_len - 1].value = eval_op1(nodes[i].type, stack[stack_len - 1].value);
             } else {
                 for (size_t j = 0; j < stack_len; j++) {
@@ -180,7 +185,7 @@ static int constant_fold(MathExprNode *nodes, size_t nodes_len, MathExprNode *no
             break;
 
         case 2:
-            if ((stack[stack_len - 1].type == MATH_EXPR_NT_NUMBER) && (stack[stack_len - 2].type == MATH_EXPR_NT_NUMBER)) {
+            if (stack_len > 1 && stack[stack_len - 1].type == MATH_EXPR_NT_NUMBER && stack[stack_len - 2].type == MATH_EXPR_NT_NUMBER) {
                 stack[stack_len - 2].value = eval_op2(nodes[i].type, stack[stack_len - 2].value, stack[stack_len - 1].value);
                 stack_len--;
             } else {
@@ -227,9 +232,12 @@ int math_expr_init(MathExpr *e, const char *expr, size_t expr_len, char *errbuf,
         int c;
         while ((c = yylex(scanner)) > 0);
         if (c < 0) {
+            yylex_destroy(scanner);
             return c;
         }
     }
+
+    yylex_destroy(scanner);
 
     while (s.op_stack_len > 0) {
         const int op = s.op_stack[s.op_stack_len - 1];
@@ -243,7 +251,10 @@ int math_expr_init(MathExpr *e, const char *expr, size_t expr_len, char *errbuf,
         s.op_stack_len--;
     }
 
-    assert(s.nodes_len > 0);
+    if (s.nodes_len == 0) {
+        snprintf(errbuf, errbuf_size, "Expression reduced to nothing");
+        return -1;
+    }
 
     if (arity_check(s.nodes, s.nodes_len, errbuf, errbuf_size) < 0) {
         return -1;
