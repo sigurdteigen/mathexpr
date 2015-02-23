@@ -106,6 +106,37 @@ static void test_evil(void **state) {
     assert_expr_fail("wtf");
 }
 
+static void test_array(void **state) {
+    MathExpr e; // BAD: 2/-7+(-9*8)*2^-t-5*sin(PI * t)
+    const char *expr = "2/-7+(-9*8)*2^-t-5";
+    size_t expr_len = strlen(expr);
+    assert_int_equal(0, math_expr_init(&e, expr, expr_len, errbuf, sizeof(errbuf)));
+
+    size_t num_points = 256 * 256;
+    double *x = malloc(num_points * sizeof(double));
+    for (size_t i = 0; i < num_points; i++) {
+        x[i] = i;
+    }
+
+    double *y = malloc(num_points * sizeof(double));
+    math_expr_eval_array(&e, num_points, x, y);
+
+    free(x);
+    free(y);
+}
+
+static void test_array2(void **state) {
+    MathExpr e; // BAD: 2/-7+(-9*8)*2^-t-5*sin(PI * t)
+    const char *expr = "2/-7+(-9*8)*2^-t-5";
+    size_t expr_len = strlen(expr);
+    assert_int_equal(0, math_expr_init(&e, expr, expr_len, errbuf, sizeof(errbuf)));
+
+    size_t num_points = 256 * 256;
+    double *y = malloc(num_points * sizeof(double));
+    math_expr_eval_array2(&e, num_points, -100, 0.1, y);
+
+    free(y);
+}
 
 int main(int argc, const char **argv) {
     const UnitTest tests[] = {
@@ -115,6 +146,8 @@ int main(int argc, const char **argv) {
         unit_test(test_parens),
         unit_test(test_funcs),
         unit_test(test_evil),
+        unit_test(test_array),
+        unit_test(test_array2),
      };
      return run_tests(tests);
 

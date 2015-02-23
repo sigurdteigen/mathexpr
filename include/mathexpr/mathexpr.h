@@ -52,10 +52,7 @@ typedef struct {
 int math_expr_init(MathExpr *e, const char *expr, size_t expr_len, char *errbuf, size_t errbuf_size);
 
 int math_expr_eval(const MathExpr *e, double x, double *y_out);
-
-int math_expr_eval_array(const MathExpr *e, size_t num_points, const double *x, double *y_out);
-int math_expr_eval_array2(const MathExpr *e, size_t num_points, double x_from, double x_delta, double *y_out);
-
+int math_expr_eval_array(const MathExpr *e, size_t num_points, const double *x, double **y_out);
 
 #ifdef __cplusplus
 }

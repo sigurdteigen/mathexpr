@@ -9,3 +9,4 @@ src/lexer.h
 test/cmockery.h
 test/cmockery.c
 test/Makefile.am
+include/Makefile.am

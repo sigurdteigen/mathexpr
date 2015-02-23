@@ -107,7 +107,7 @@ AC_CONFIG_FILES([Makefile
 
 AC_MSG_RESULT(DONE: Configuration done. Run make/gmake to build mathexpr.)
 
-AC_OUTPUT
+AC_OUTPUT([libmathexpr.pc])
 
 echo "
 

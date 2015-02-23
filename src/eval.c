@@ -267,7 +267,7 @@ int math_expr_init(MathExpr *e, const char *expr, size_t expr_len, char *errbuf,
     return 0;
 }
 
-int math_expr_eval(MathExpr *e, double x, double *y_out) {
+int math_expr_eval(const MathExpr *e, double x, double *y_out) {
     double stack[e->nodes_len];
     size_t stack_len = 0;
 
@@ -305,5 +305,20 @@ int math_expr_eval(MathExpr *e, double x, double *y_out) {
 
     assert(stack_len == 1);
     *y_out = stack[0];
+    return 0;
+}
+
+int math_expr_eval_array(const MathExpr *e, size_t num_points, const double *x, double *y_out) {
+    for (size_t i = 0; i < num_points; i++) {
+        math_expr_eval(e, x[i], y_out + i);
+    }
+    return 0;
+}
+
+int math_expr_eval_array2(const MathExpr *e, size_t num_points, double x_from, double x_delta, double *y_out) {
+    double x = x_from;
+    for (size_t i = 0; i < num_points; i++, x += x_delta) {
+        math_expr_eval(e, x, y_out + i);
+    }
     return 0;
 }

@@ -26,6 +26,9 @@ src/stamp-h1
 *.log
 *.trs
 ylwrap
+callgrind.*
+*.pc
+*.tar.gz
 
 *.creator.user
 src/lexer.c

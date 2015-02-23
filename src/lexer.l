@@ -28,8 +28,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-
-
 #if HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -108,7 +106,7 @@ static bool op_should_pop(int o1, int o2) {
 
 %}
 
-%option reentrant noyywrap nounput never-interactive warn
+%option reentrant noyywrap nounput never-interactive warn nodefault
 %option header-file="lexer.h"
 
 WS [ \t\r\n]+
