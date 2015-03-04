@@ -24,7 +24,6 @@ dnl ######################################################################
 AC_LANG([C])
 AC_PROG_CC_C99()
 AM_PROG_CC_C_O
-AC_PROG_CC([clang gcc])
 
 AC_CONFIG_LIBOBJ_DIR(compat)
 
